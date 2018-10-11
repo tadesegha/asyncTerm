@@ -1,13 +1,13 @@
 function! s:AsyncTerm()
     if exists('s:bufferId') && bufexists(s:bufferId)
-        execute 'normal gt'
+        execute "buffer " . s:bufferId
     else
-        tabnew
         call s:NewTerminal()
     endif
 endfunction
 
 function! s:NewTerminal()
+    enew
     let shell = exists('g:asyncTermShell') ? g:asyncTermShell : &shell
     let s:jobId = termopen(shell)
     let s:bufferId = bufnr("%")
