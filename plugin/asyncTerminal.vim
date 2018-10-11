@@ -19,4 +19,4 @@ function! s:AsyncTermExecute(cmd)
 endfunction
 
 command! AsyncTerm call s:AsyncTerm() | startinsert
-command! -nargs=+ AsyncTermExecute call s:AsyncTermExecute('<args>')
+command! NewAsyncTerm call s:NewTerminal() | startinsert
