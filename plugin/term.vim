@@ -1,22 +1,28 @@
+let s:returnChar = has("win32") || has("win64") ? "\r" : "\n"
+
 function! s:Term()
     if exists('s:bufferId') && bufexists(s:bufferId)
         execute "buffer " . s:bufferId
     else
-        call s:NewTerm('shell', 1)
+        let newTerm = s:NewTerm('shell')
+        let s:bufferId = newTerm['bufferNumber']
     endif
 endfunction
 
-function! s:NewTerm(name, track)
+function! s:NewTerm(bufferName)
     enew
     let shell = exists('g:termShell') ? g:termShell : &shell
-    let s:jobId = termopen(shell)
+    let jobId = termopen(shell)
 
-    if (a:track)
-      let s:bufferId = bufnr("%")
-    endif
+    execute "file " . a:bufferName
+    return { 'jobId': jobId, 'bufferNumber': bufnr("%") }
+endfunction
 
-    execute "file " . a:name
+function! s:AsyncTerm(command, bufferName)
+  let newTerm = s:NewTerm(a:bufferName)
+  call chansend(newTerm["jobId"], a:command . s:returnChar)
 endfunction
 
 command! Term call s:Term() | startinsert
-command! -nargs=1 NewTerm call s:NewTerm("<args>", 0) | startinsert
+command! -nargs=1 NewTerm call s:NewTerm("<args>") | startinsert
+command! -nargs=+ AsyncTerm call s:AsyncTerm(<f-args>)
