@@ -27,7 +27,7 @@ function! term#asyncTerm(identifier, command)
 endfunction
 
 function! term#executeInTerm(identifier, command)
-  call s:AsyncTerm(a:command, a:identifier)
+  call term#asyncTerm(a:identifier, a:command)
   execute 'buffer ' . s:terminals[a:identifier].bufferNumber
   startinsert
 endfunction
