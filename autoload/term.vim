@@ -2,7 +2,7 @@ let s:returnChar = has("win32") || has("win64") ? "\r" : "\n"
 let s:terminals = {  }
 
 function! term#defaultTerm()
-  if (has_key(s:terminals, 'shell'))
+  if (has_key(s:terminals, 'shell') && bufexists(s:terminals.shell.bufferNumber))
     execute "buffer " . s:terminals.shell.bufferNumber
   else
     call s:newTerm('shell')
