@@ -2,14 +2,14 @@ let s:returnChar = has("win32") || has("win64") ? "\r" : "\n"
 let s:terminals = {  }
 
 function! term#defaultTerm()
-  if (has_key(s:terminals, 'shell') && bufexists(s:terminals.shell.bufferNumber))
+  if s:termExists('shell')
     execute "buffer " . s:terminals.shell.bufferNumber
   else
-    call s:newTerm('shell')
+    call term#newTerm('shell')
   endif
 endfunction
 
-function! s:newTerm(identifier)
+function! term#newTerm(identifier)
   enew
   let shell = exists('g:termShell') ? g:termShell : &shell
   let jobId = termopen(shell)
@@ -19,8 +19,8 @@ function! s:newTerm(identifier)
 endfunction
 
 function! term#asyncTerm(identifier, command)
-  if (!has_key(s:terminals, a:identifier))
-    call s:newTerm(a:identifier)
+  if !s:termExists(a:identifier)
+    call term#newTerm(a:identifier)
   endif
 
   call chansend(s:terminals[a:identifier].jobId, a:command . s:returnChar)
@@ -30,4 +30,8 @@ function! term#executeInTerm(identifier, command)
   call term#asyncTerm(a:identifier, a:command)
   execute 'buffer ' . s:terminals[a:identifier].bufferNumber
   startinsert
+endfunction
+
+function! s:termExists(identifier)
+  return has_key(s:terminals, a:identifier) && bufexists(s:terminals[a:identifier].bufferNumber)
 endfunction
