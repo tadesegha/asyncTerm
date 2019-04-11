@@ -32,6 +32,15 @@ function! term#executeInTerm(identifier, command)
   startinsert
 endfunction
 
+function! term#goToTerm(identifier)
+  if s:termExists(a:identifier)
+    execute "buffer " . a:identifier
+  else
+    call term#newTerm(a:identifier)
+  endif
+endfunction
+
 function! s:termExists(identifier)
-  return has_key(s:terminals, a:identifier) && bufexists(s:terminals[a:identifier].bufferNumber)
+  return bufexists(a:identifier)
+  " return has_key(s:terminals, a:identifier) && bufexists(s:terminals[a:identifier].bufferNumber)
 endfunction
