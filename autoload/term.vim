@@ -5,13 +5,13 @@ function! term#goToTerm(identifier)
   if s:termExists(a:identifier)
     execute "buffer " . a:identifier
   else
-    call term#newTerm(a:identifier)
+    call s:newTerm(a:identifier)
   endif
 endfunction
 
 function! term#asyncTerm(identifier, command)
   if !s:termExists(a:identifier)
-    call term#newTerm(a:identifier)
+    call s:newTerm(a:identifier)
   endif
 
   call chansend(s:terminals[a:identifier].jobId, a:command . s:returnChar)
