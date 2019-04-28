@@ -17,6 +17,12 @@ function! term#asyncTerm(identifier, command)
   call chansend(s:terminals[a:identifier].jobId, a:command . s:returnChar)
 endfunction
 
+function! term#executeInTerm(identifier, command)
+  call term#goToTerm(a:identifier)
+  call chansend(b:terminal_job_id, a:command . s:returnChar)
+  startinsert
+endfunction
+
 function! s:newTerm(identifier)
   enew
   let shell = exists('g:termShell') ? g:termShell : &shell
@@ -24,12 +30,6 @@ function! s:newTerm(identifier)
 
   execute "file " . a:identifier
   let s:terminals[a:identifier] = { 'jobId': jobId, 'bufferNumber': bufnr("%") }
-endfunction
-
-function! s:executeInTerm(identifier, command)
-  call term#asyncTerm(a:identifier, a:command)
-  execute 'buffer ' . s:terminals[a:identifier].bufferNumber
-  startinsert
 endfunction
 
 function! s:termExists(identifier)
