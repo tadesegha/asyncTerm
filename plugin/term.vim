@@ -1,1 +1,1 @@
-command! -nargs=1 NewTerm call term#newTerm("<args>")
+command! -nargs=1 GoToTerm call term#goToTerm("<args>")
